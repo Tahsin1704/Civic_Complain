@@ -6,10 +6,15 @@ from . import views
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name='landing.html'), name='landing'),
+    path('about/', views.about_view, name='about_page'),  # About page
+    path('services/', views.services_view, name='services_page'),
+    path('contact/', views.contact_view, name='contact_page'),
 
     path('home/', views.home, name='home'),
     path('login/', auth_views.LoginView.as_view(template_name='accounts/login.html'), name='login'),
 path('signup/', views.signup_citizen, name='signup'),
+
+
 
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
 
@@ -76,6 +81,7 @@ path('tasks/search-preview/', views.search_task_preview, name='search_task_previ
 
 # Admin Task search + view
 path('tasks/admin/search/', views.admin_task_search, name='admin_task_search'),
+path('search-task/', views.global_task_search, name='global_task_search'),
 
     path('tasks/<int:task_id>/preview/', views.task_preview, name='task_preview'),
 path('tasks/<int:task_id>/view/', views.admin_task_view, name='admin_task_view'),

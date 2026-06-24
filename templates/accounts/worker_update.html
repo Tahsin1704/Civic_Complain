@@ -1,13 +1,180 @@
 {% extends "accounts/base.html" %}
 {% block content %}
-<div class="container mt-4">
-  <h2>Update Worker: {{ worker.first_name }} {{ worker.last_name }}</h2>
 
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Save Changes</button>
-    <a href="{% url 'worker_list' %}" class="btn btn-secondary">Cancel</a>
-  </form>
+<div class="worker-update-page">
+
+    <h2>Update Worker</h2>
+
+    <form method="post" enctype="multipart/form-data" class="worker-form">
+        {% csrf_token %}
+
+        <div class="form-box">
+            {{ form.as_p }}
+        </div>
+
+        <div class="btn-group">
+            <button type="submit" class="btn-update">
+                Update Worker
+            </button>
+        </div>
+
+    </form>
+
+    <a href="{% url 'worker_list' %}" class="btn-back">
+        ← Back to Worker List
+    </a>
+
 </div>
+
+<style>
+
+/* ================= PAGE CONTAINER ================= */
+.worker-update-page{
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 30px;
+
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border-radius: 18px;
+
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+/* TITLE */
+.worker-update-page h2{
+    text-align: center;
+    margin-bottom: 20px;
+    color: #0f766e;
+    font-weight: 600;
+}
+
+/* FORM BOX */
+.form-box input,
+.form-box select,
+.form-box textarea{
+    width: 100%;
+    padding: 10px;
+
+    margin-bottom: 12px;
+
+    border-radius: 10px;
+    border: none;
+
+    background: rgba(255,255,255,0.85);
+
+    box-sizing: border-box;
+}
+
+/* ================= BUTTON BASE ================= */
+.btn-update,
+.btn-back{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 12px 18px;
+    border-radius: 12px;
+
+    text-decoration: none;
+    font-weight: 500;
+    color: #fff;
+
+    border: 1px solid rgba(255,255,255,0.25);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    box-shadow:
+        0 8px 18px rgba(0,0,0,0.18),
+        inset 0 1px 1px rgba(255,255,255,0.15);
+
+    transition: 0.3s ease;
+}
+
+/* CENTER BUTTON WRAPPER */
+.btn-group{
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+/* ================= UPDATE (TEAL GLASS PREMIUM) ================= */
+.btn-update{
+    background: linear-gradient(
+        135deg,
+        rgba(6,78,59,0.85),   /* deep green */
+        rgba(4,120,87,0.85)   /* emerald dark */
+    );
+
+    border: 1px solid rgba(16,185,129,0.35);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    box-shadow:
+        0 10px 22px rgba(0,0,0,0.25),
+        inset 0 1px 1px rgba(255,255,255,0.15);
+
+    color: #fff;
+}
+/* ================= BACK (DEEP BLUE GLASS PREMIUM) ================= */
+.btn-back{
+    display: flex;              /* override inline */
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;               /* ✔ same full width */
+    height: 44px;              /* ✔ same height */
+
+    margin-top: 15px;
+
+    border-radius: 12px;
+
+    text-decoration: none;
+    font-weight: 500;
+    color: #fff;
+
+    background: linear-gradient(
+        135deg,
+        rgba(30,58,138,0.85),
+        rgba(67,56,202,0.85)
+    );
+
+    border: 1px solid rgba(255,255,255,0.25);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    box-shadow:
+        0 8px 18px rgba(0,0,0,0.18),
+        inset 0 1px 1px rgba(255,255,255,0.15);
+
+    transition: 0.3s ease;
+}
+.btn-update{
+    font-weight: 700;   /* ✔ bold */
+}
+
+/* ================= HOVER ================= */
+.btn-update:hover,
+.btn-back:hover{
+    transform: translateY(-3px);
+    box-shadow:
+        0 14px 30px rgba(0,0,0,0.28),
+        inset 0 1px 1px rgba(255,255,255,0.2);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 600px){
+    .worker-update-page{
+        margin: 20px;
+        padding: 20px;
+    }
+}
+
+</style>
+
 {% endblock %}

@@ -1,64 +1,306 @@
 {% extends 'accounts/base.html' %}
 
 {% block content %}
-<h2>Task Preview</h2>
-<p><strong>Title:</strong>
-    {{ task.title }}
-    {% if task.is_reopened %}
-        <span class="text-danger">(Reopened)</span>
-    {% endif %}
-</p>
 
-<p><strong>Category:</strong> {{ task.category }}</p>
+<div class="container mt-4">
 
-<p><strong>Location:</strong> {{ task.location }}</p>
-<p><strong>Priority:</strong> {{ task.priority }}</p>
-<p><strong>Status:</strong> {{ task.status }}</p>
-<p><strong>Assigned To:</strong>
-    {% if task.assigned_to %}
-        {{ task.assigned_to.first_name }} {{ task.assigned_to.last_name }} ({{ task.assigned_to.email }})
-    {% else %}
-        <em>Not assigned</em>
-    {% endif %}
-</p>
-<p><strong>Estimated Time:</strong> {{ task.estimated_time }}</p>
+<div class="task-detail-card">
 
-<p><strong>Completed At:</strong> {{ task.completed_at }}</p>
- <p><strong>Description:</strong> {{ task.description }}</p>
-        <p><strong>Instructions:</strong> {{ task.instructions }}</p>
+<h2 class="task-title">Task Preview</h2>
 
-        {% if task.task_photo %}
-            <img src="{{ task.task_photo.url }}" alt="Task Photo" class="img-fluid" style="max-width: 200px; border:1px solid #ccc; padding:5px;">
-        {% else %}
-            <p><em>No photo submitted</em></p>
+<table class="modern-table">
+
+<tr>
+    <th>Task Code</th>
+    <td>{{ task.task_code|default:"-" }}</td>
+</tr>
+
+<tr>
+    <th>Title</th>
+    <td>
+        {{ task.title }}
+        {% if task.is_reopened %}
+            <span class="badge-danger">(Reopened)</span>
         {% endif %}
+    </td>
+</tr>
 
-{% if not task.assigned_to %}
-    <h4>Assign Task</h4>
-    <form method="post" action="{% url 'assign_task' task.id %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Assign Task</button>
-        <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Cancel</a>
-    </form>
-{% endif %}
-<hr>
+<tr>
+    <th>Category</th>
+    <td>{{ task.category }}</td>
+</tr>
 
+<tr>
+    <th>Location</th>
+    <td>{{ task.location }}</td>
+</tr>
 
-<div style="display:flex; align-items:flex-start; gap:20px;">
+<tr>
+    <th>Priority</th>
+    <td><span class="badge">{{ task.priority|title }}</span></td>
+</tr>
 
+<tr>
+    <th>Status</th>
+    <td><span class="badge">{{ task.status|title }}</span></td>
+</tr>
 
+<tr>
+    <th>Assigned To</th>
+    <td>
+        {% if task.assigned_to %}
+            {{ task.assigned_to.first_name }} {{ task.assigned_to.last_name }}
+            <br>
+            <small>{{ task.assigned_to.email }}</small>
+        {% else %}
+            <em>Not assigned</em>
+        {% endif %}
+    </td>
+</tr>
 
+<tr>
+    <th>Estimated Time</th>
+    <td>{{ task.estimated_time|default:"-" }}</td>
+</tr>
 
-<hr>
+<tr>
+    <th>Completed At</th>
+    <td>{{ task.completed_at|default:"-" }}</td>
+</tr>
 
+<tr>
+    <th>Description</th>
+    <td>{{ task.description|default:"-" }}</td>
+</tr>
 
-<a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">⬅ Back to Dashboard</a>
+<tr>
+    <th>Instructions</th>
+    <td>{{ task.instructions|default:"-" }}</td>
+</tr>
 
+<tr>
+    <th>Task Photo</th>
+    <td class="img-cell">
+        {% if task.task_photo %}
+            <img src="{{ task.task_photo.url }}" class="table-img">
+        {% else %}
+            <em>No photo submitted</em>
+        {% endif %}
+    </td>
+</tr>
 
-<form action="{% url 'task_delete' task.id %}" method="post" style="display:inline;">
+</table>
+
+<!-- ================= BUTTONS ================= -->
+
+<div class="btn-row-top">
+
+    {% if not task.assigned_to %}
+        <a href="{% url 'assign_task' task.id %}" class="btn-common">Assign Task</a>
+    {% endif %}
+
+ <form action="{% url 'task_delete' task.id %}" method="post"
+      onsubmit="return confirm('Are you sure you want to delete this task?');">
     {% csrf_token %}
-    <button type="submit" class="btn btn-danger">Delete</button>
+    <button type="submit">Delete</button>
 </form>
+
+</div>
+
+<div class="btn-row-bottom">
+    <a href="{% url 'admin_dashboard' %}" class="btn-common full-width">⬅ Back</a>
+</div>
+
+</div>
+</div>
+
+<style>
+
+/* CARD */
+.task-detail-card{
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    backdrop-filter: blur(10px);
+}
+
+/* TITLE */
+.task-title{
+    margin-bottom: 15px;
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+/* TABLE */
+.modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255,255,255,0.95);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(148,163,184,0.3);
+}
+
+.modern-table th {
+    width: 30%;
+    padding: 14px;
+    text-align: left;
+    background: rgba(241,245,249,0.9);
+    color: #0369a1;
+    font-weight: 600;
+}
+
+.modern-table td {
+    padding: 14px;
+    border-bottom: 1px solid rgba(148,163,184,0.2);
+}
+
+.modern-table tr:hover{
+    background: rgba(186,230,253,0.25);
+}
+
+/* IMAGE */
+.img-cell{
+    text-align: left;
+}
+
+.table-img{
+    width: 140px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid rgba(59,130,246,0.3);
+}
+
+/* BADGES */
+.badge{
+    padding: 4px 10px;
+    background: rgba(59,130,246,0.15);
+    color: #0369a1;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.badge-danger{
+    padding: 4px 10px;
+    background: rgba(239,68,68,0.15);
+    color: #b91c1c;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+/* ================= BUTTON SYSTEM ================= */
+
+/* TOP ROW */
+.btn-row-top{
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* EQUAL SIZE LOGIC */
+.btn-row-top a,
+.btn-row-top form{
+    flex: 1;
+}
+
+/* FULL WIDTH INSIDE */
+.btn-row-top .btn-common{
+    width: 100%;
+    text-align: center;
+}
+
+/* BUTTON STYLE */
+.btn-common{
+    padding: 10px 18px;
+    border-radius: var(--border-radius);
+    color: white;
+    font-weight: 500;
+    text-decoration: none;
+
+    background: linear-gradient(135deg, var(--primary-1), var(--primary-2));
+    border: 1px solid var(--glass-border);
+
+    cursor: pointer;
+    transition: 0.3s ease;
+    display: inline-block;
+}
+
+/* form button fix */
+button.btn-common{
+    border: none;
+    width: 100%;
+}
+
+/* hover */
+.btn-common:hover{
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-1));
+}
+
+/* BOTTOM */
+.btn-row-bottom{
+    margin-top: 10px;
+}
+
+.full-width{
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+    /* ================= FIX ASSIGN + DELETE SAME SIZE ================= */
+
+.btn-row-top{
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* equal width container */
+.btn-row-top a,
+.btn-row-top form{
+    flex: 1;
+    display: flex;
+}
+
+/* make both elements same button box */
+.btn-row-top a,
+.btn-row-top button{
+    width: 100%;
+    height: 46px;   /* 🔥 SAME HEIGHT FIX */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    color: white;
+    text-decoration: none;
+
+    background: linear-gradient(135deg, var(--primary-1), var(--primary-2));
+    border: 1px solid var(--glass-border);
+
+    cursor: pointer;
+    transition: 0.3s ease;
+
+    padding: 0;
+    margin: 0;
+}
+
+/* remove default button style */
+.btn-row-top button{
+    border: none;
+    font-family: inherit;
+}
+
+/* hover */
+.btn-row-top a:hover,
+.btn-row-top button:hover{
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-1));
+}
+
+</style>
 
 {% endblock %}

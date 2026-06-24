@@ -1,37 +1,183 @@
-{% extends 'accounts/base.html' %}
+{% extends "accounts/base.html" %}
 {% block content %}
-<h2>Citizens</h2>
-<table class="table">
-  <form method="get" action="{% url 'citizen_search_admin' %}" class="d-flex mb-3" style="max-width: 400px;">
-  <input type="text" name="q" class="form-control me-2" placeholder="Search by email..." required>
-  <button class="btn btn-outline-primary" type="submit">Search</button>
-</form>
 
-  <thead><tr><th>Email</th><th>Name</th><th>Photo</th><th>Address</th><th>Status</th></tr></thead>
-  <tbody>
-    {% for c in citizens %}
+<div class="page-wrapper">
+
+  <h2 class="page-title">Citizens</h2>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+
+    <form method="get"
+          action="{% url 'citizen_search_admin' %}"
+          class="search-box">
+
+      <input type="text"
+             name="q"
+             placeholder="Search by email..."
+             value="{{ query|default:'' }}">
+
+      <button type="submit">Search</button>
+
+    </form>
+
+  </div>
+
+  <!-- TABLE -->
+  <table class="data-table">
+
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Name</th>
+        <th>Photo</th>
+        <th>Address</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for c in citizens %}
       <tr>
         <td>{{ c.email }}</td>
         <td>{{ c.first_name }} {{ c.last_name }}</td>
 
-         <td>
+        <td>
           {% if c.photo %}
-            <img src="{{ c.photo.url }}" alt="Profile Photo" width="60" height="60" class="rounded-circle border">
-          {% else %}
-            <span class="text-muted">No photo</span>
-          {% endif %}
+            <img src="{{ c.photo.url }}" class="avatar">
+          {% else %} N/A {% endif %}
         </td>
 
-  <td>{{ c.address|default:"N/A" }}</td>
+        <td>{{ c.address|default:"N/A" }}</td>
 
         <td>
-
-          <a class="btn btn-danger" href="{% url 'citizen_delete' c.id %}">Delete</a>
+          <a href="{% url 'citizen_delete' c.id %}" class="delete">Delete</a>
         </td>
       </tr>
-    {% empty %}
-      <tr><td colspan="4">No citizens yet.</td></tr>
-    {% endfor %}
-  </tbody>
-</table>
+      {% endfor %}
+    </tbody>
+
+  </table>
+
+</div>
+
+<style>
+
+/* BACKGROUND USING ROOT */
+.page-wrapper{
+  min-height:100vh;
+  padding:30px;
+  background: linear-gradient(
+    135deg,
+    var(--primary-1),
+    var(--primary-2)
+  );
+}
+
+/* TITLE */
+.page-title{
+  color:white;
+  font-weight:700;
+  margin-bottom:15px;
+}
+
+/* TOP BAR */
+.top-bar{
+  margin-bottom:15px;
+}
+
+/* SEARCH */
+.search-box{
+  display:flex;
+  gap:10px;
+}
+
+.search-box input{
+  padding:10px;
+  border-radius:var(--border-radius);
+  border:none;
+  width:240px;
+  background: var(--card-bg);
+}
+
+/* BUTTON */
+.search-box button{
+  background: var(--primary-dark);
+  color:white;
+  border:none;
+  padding:10px 14px;
+  border-radius:var(--border-radius);
+}
+
+/* TABLE */
+.data-table{
+  width:100%;
+  background: var(--card-bg);
+  border-collapse:collapse;
+  border-radius:var(--border-radius);
+  overflow:hidden;
+}
+
+/* HEADER */
+.data-table thead{
+  background: var(--primary-dark);
+}
+
+.data-table th{
+  padding:12px;
+  color:white;
+  text-align:left;
+}
+
+/* BODY */
+.data-table td{
+  padding:12px;
+  border-bottom:1px solid #eee;
+  color: var(--text-dark);
+}
+
+.data-table tbody tr:hover{
+  background:#f1f5f9;
+}
+
+/* IMAGE */
+.avatar{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  object-fit:cover;
+}
+
+.delete{
+  background: linear-gradient(
+    135deg,
+    rgba(30,58,138,0.85),
+    rgba(67,56,202,0.85)
+  );
+
+  color: white;
+  padding: 6px 10px;
+  border-radius: 8px;
+  text-decoration: none;
+
+  border: 1px solid rgba(255,255,255,0.25);
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  box-shadow: 0 6px 15px rgba(0,0,0,0.18);
+
+  transition: 0.3s ease;
+}
+
+/* HOVER (your same style, slightly improved) */
+.delete:hover{
+  transform: translateY(-2px);
+  box-shadow:
+    0 12px 28px rgba(0,0,0,0.28),
+    inset 0 1px 1px rgba(255,255,255,0.2);
+}
+
+</style>
+
 {% endblock %}

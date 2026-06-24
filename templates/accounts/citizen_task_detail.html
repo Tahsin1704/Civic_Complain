@@ -1,60 +1,262 @@
 {% extends "accounts/base.html" %}
 
 {% block content %}
+
 <div class="container mt-4">
-    <h2>Task Details: {{ task.title }}</h2>
 
-    <ul class="list-group mt-3">
-        <!-- Always show these -->
-        <li class="list-group-item"><strong>Description:</strong> {{ task.description }}</li>
-        <li class="list-group-item"><strong>Category:</strong> {{ task.category }}</li>
-        <li class="list-group-item"><strong>Status:</strong> {{ task.status|title }}</li>
-        <li class="list-group-item"><strong>Priority:</strong> {{ task.priority|title }}</li>
-        <li class="list-group-item"><strong>Location:</strong> {{ task.location }}</li>
+<div class="task-detail-card">
+
+<h2 class="task-title">Task Details</h2>
+
+<!-- ================= TABLE ================= -->
+<table class="modern-table">
+
+<tr>
+    <th>Task Code</th>
+    <td>{{ task.task_code|default:"-" }}</td>
+</tr>
+
+<tr>
+    <th>Title</th>
+    <td>{{ task.title }}</td>
+</tr>
+
+<tr>
+    <th>Description</th>
+    <td>{{ task.description|default:"-" }}</td>
+</tr>
+
+<tr>
+    <th>Instruction</th>
+    <td>{{ task.instructions|default:"-" }}</td>
+</tr>
+
+<tr>
+    <th>Category</th>
+    <td>{{ task.category }}</td>
+</tr>
+
+<tr>
+    <th>Status</th>
+    <td><span class="badge">{{ task.status|title }}</span></td>
+</tr>
+
+<tr>
+    <th>Priority</th>
+    <td>{{ task.priority|title }}</td>
+</tr>
+
+<tr>
+    <th>Location</th>
+    <td>{{ task.location }}</td>
+</tr>
+
+<tr>
+    <th>Assigned To</th>
+    <td>
+        {% if task.assigned_to %}
+            {{ task.assigned_to.email }}
+        {% else %}
+            -
+        {% endif %}
+    </td>
+</tr>
+
+<tr>
+    <th>Before Work</th>
+    <td>
         {% if task.task_photo %}
-            <li class="list-group-item">
-                <strong>Task Photo:</strong><br>
-                <img src="{{ task.task_photo.url }}" alt="Task Photo" style="max-width:300px;">
-            </li>
+            <img src="{{ task.task_photo.url }}" class="table-img">
+        {% else %}
+            No image
         {% endif %}
-        <li class="list-group-item"><strong>Assigned To:</strong>
-            {% if task.assigned_to %}
-                {{ task.assigned_to.email}}
-            {% else %}
-                -
-            {% endif %}
-        </li>
+    </td>
+</tr>
 
-        <!-- Show latest progress if in_progress -->
-        {% if task.status == 'in_progress' %}
-            <li class="list-group-item"><strong>Progress:</strong> {{ task.progress }}</li>
-        {% endif %}
+<!-- IN PROGRESS -->
+{% if task.status|lower == "in_progress" %}
 
-        <!-- Show detailed info if completed -->
-        {% if task.status == 'completed' %}
-            {% if task.work_description %}
-                <li class="list-group-item"><strong>Work Description:</strong> {{ task.work_description }}</li>
-            {% endif %}
-            {% if task.materials_used %}
-                <li class="list-group-item"><strong>Materials Used:</strong> {{ task.materials_used }}</li>
-            {% endif %}
-            {% if task.additional_notes %}
-                <li class="list-group-item"><strong>Additional Notes:</strong> {{ task.additional_notes }}</li>
-            {% endif %}
-            {% if task.after_photo %}
-                <li class="list-group-item">
-                    <strong>After Photo:</strong><br>
-                    <img src="{{ task.after_photo.url }}" alt="After Photo" style="max-width:300px;">
-                </li>
-            {% endif %}
-        {% endif %}
-    </ul>
+<tr>
+    <th>Work Progress</th>
+    <td>{{ task.progress|default:"-" }}</td>
+</tr>
 
-    <a href="{% url 'citizen_dashboard' %}" class="btn btn-primary mt-3">Back to Dashboard</a>
-</div>
-{% if task.status == 'completed' %}
-<hr>
+<tr>
+    <th>Work Description</th>
+    <td>-</td>
+</tr>
+
+<tr>
+    <th>Materials Used</th>
+    <td>-</td>
+</tr>
+
+<tr>
+    <th>Additional Notes</th>
+    <td>-</td>
+</tr>
+
+<tr>
+    <th>After Work</th>
+    <td>-</td>
+</tr>
 
 {% endif %}
+
+<!-- COMPLETED -->
+{% if task.status|lower == "completed" %}
+
+<tr>
+    <th>Work Description</th>
+    <td>{{ task.work_description|default:"-" }}</td>
+</tr>
+
+<tr>
+    <th>Materials Used</th>
+    <td>{{ task.materials_used|default:"-" }}</td>
+</tr>
+
+<tr>
+    <th>Additional Notes</th>
+    <td>{{ task.additional_notes|default:"-" }}</td>
+</tr>
+
+<tr>
+    <th>After Work</th>
+    <td>
+        {% if task.after_photo %}
+            <img src="{{ task.after_photo.url }}" class="table-img">
+        {% else %}
+            No image
+        {% endif %}
+    </td>
+</tr>
+
+{% endif %}
+
+</table>
+
+<!-- STATUS -->
+{% if task.status|lower == "completed" %}
+<div class="done-text">✔ This work is done</div>
+{% else %}
+<div class="not-done-text">❌ Work is not done</div>
+{% endif %}
+
+<!-- BACK -->
+<div class="btn-area mt-3">
+    <a href="{% url 'citizen_dashboard' %}" class="btn-back">← Back</a>
+</div>
+
+</div>
+</div>
+
+<style>
+
+/* TABLE */
+.modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    overflow: hidden;
+
+    color: #0f172a;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.modern-table th {
+    width: 30%;
+    padding: 14px;
+    text-align: left;
+    color: #0369a1;
+    background: rgba(241, 245, 249, 0.9);
+}
+
+.modern-table td {
+    padding: 14px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.modern-table tr:hover {
+    background: rgba(186, 230, 253, 0.3);
+}
+
+/* IMAGE */
+.table-img {
+    width: 160px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid rgba(59, 130, 246, 0.3);
+}
+
+/* STATUS */
+.done-text {
+    margin-top: 15px;
+    padding: 10px;
+    text-align: center;
+    background: rgba(34,197,94,0.15);
+    border: 1px solid rgba(34,197,94,0.5);
+    border-radius: 10px;
+    color: #166534;
+}
+
+.not-done-text {
+    margin-top: 15px;
+    padding: 10px;
+    text-align: center;
+    background: rgba(239,68,68,0.15);
+    border: 1px solid rgba(239,68,68,0.5);
+    border-radius: 10px;
+    color: #7f1d1d;
+}
+
+/* BUTTON */
+.btn-back {
+    padding: 10px 16px;
+    background: #475569;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+}
+.btn-back{
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  font-weight: 500;
+  color: #fff;
+
+  /* gradient from your palette */
+  background: linear-gradient(
+    135deg,
+    var(--primary-1),
+    var(--primary-2)
+  );
+
+  border: 1px solid var(--glass-border);
+
+  /* soft glass effect */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  box-shadow: 0 8px 20px rgba(58, 168, 160, 0.25);
+
+  transition: 0.3s ease;
+}
+
+.btn-back:hover{
+  transform: translateY(-2px);
+  background: linear-gradient(
+    135deg,
+    var(--primary-dark),
+    var(--primary-1)
+  );
+  box-shadow: 0 12px 28px rgba(58, 168, 160, 0.35);
+}
+</style>
 
 {% endblock %}

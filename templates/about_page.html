@@ -1,0 +1,58 @@
+ {% extends "accounts/base.html" %}
+{% load static %}
+{% block content %}
+
+<section class="about-section">
+  <h1>Civic Complaint Management System</h1>
+
+  <p>
+    Our platform empowers citizens to report public issues directly and efficiently.
+    Once a complaint is submitted, it is instantly received by the admin, who assigns
+    the task to the appropriate field worker. The worker completes the job and updates
+    the status in real-time, allowing citizens to track progress seamlessly.
+  </p>
+
+  <h2>Mission</h2>
+  <p>
+    Led by Tahsin Zaman, our mission is to ensure transparency, accountability,
+    and quick resolution of civic complaints through real-time tracking and AI analysis.
+  </p>
+
+  <h2>Our Team</h2>
+  <ul>
+    <li><b>Admin:</b> Receives complaints and assigns tasks</li>
+    <li><b>Worker:</b> Resolves complaints and updates status</li>
+    <li><b>Citizen:</b> Submits complaints and tracks progress</li>
+  </ul>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="main-footer">
+  <div class="footer-container">
+   <div class="footer-col about-footer">
+  <h3>About Civic System</h3>
+  <p>
+    Smart Civic Complain Management System lets citizens report public issues quickly. Complaints are
+    received by admins, assigned to workers, and tracked in real-time until resolved, ensuring
+    fast and transparent service.
+  </p>
+</div>
+
+ <div class="footer-col">
+  <h3>Quick Links</h3>
+  <ul>
+    <li><a href="{% url 'landing' %}" class="home-link">Home</a></li>
+    <li><a href="{% url 'about_page' %}">About Us</a></li>
+    <li><a href="{% url 'services_page' %}">Our Services</a></li>
+    <li><a href="{% url 'contact_page' %}">Contact</a></li>
+  </ul>
+</div>
+    <div class="footer-col">
+      <h3>Address </h3>
+      <p> Green Smart City <br>Dhaka, Bangladesh<br>📞 +8801746689122 <br>Email: tahsinzaman20@gmail.com</p>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 Smart Civic Management System</div>
+</footer>
+
+{% endblock %}

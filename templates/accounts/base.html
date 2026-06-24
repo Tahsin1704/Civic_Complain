@@ -4,137 +4,236 @@
 <head>
   <meta charset="UTF-8">
   <title>Civic Complaint</title>
+
+  <!-- MAIN CSS -->
   <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
   <style>
-    /* Logout button box */
-    .logout-box form {
-      margin: 0;
-    }
+    /* Logout Button */
+    .logout-box form { margin:0; }
     .logout-box button {
-      background-color: red;
+      background-color: #dc2626;
       color: white;
       border: none;
-      padding: 5px 12px;
+      padding: 6px 12px;
       border-radius: 4px;
       cursor: pointer;
       font-weight: bold;
     }
 
+    /* Search Form Spacing */
+    .topbar nav form { margin-left: 20px; display:flex; }
+    .topbar nav form input { padding:4px; }
+    .topbar nav form button { margin-left:4px; padding:4px 8px; }
 
-    .topbar nav {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
+    /* ================= PREMIUM LOGO ================= */
+.premium-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 22px;
+    margin: 0;
+}
+
+/* Icon */
+.logo-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    color: #38bdf8;
+
+    box-shadow:
+        0 4px 12px rgba(0,0,0,0.3),
+        inset 0 0 6px rgba(255,255,255,0.05);
+
+    font-size: 18px;
+}
+
+/* Text */
+.logo-text {
+    font-weight: 600;
+    color: #1e293b;
+    letter-spacing: 0.5px;
+}
+
+/* Highlight */
+.logo-text strong {
+    background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+    /* ================= NAV LINKS (GLASS MATCHED TEXT) ================= */
+.topbar nav a {
+    text-decoration: none;
+    color: rgba(255,255,255,0.85);   /* soft glass white */
+
+    font-size: 14px;
+    font-weight: 500;
+
+    padding: 7px 14px;
+    border-radius: 12px;
+
+    background: rgba(255,255,255,0.08);
+    transition: 0.25s ease;
+}
+
+/* hover */
+.topbar nav a:hover {
+    background: rgba(255,255,255,0.15);
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+/* ================= SEARCH ================= */
+.topbar nav form input {
+    border: 1px solid rgba(255,255,255,0.2);
+
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.9);
+
+    padding: 6px 10px;
+    width: 150px;
+    border-radius: 10px;
+}
+
+.topbar nav form input::placeholder {
+    color: rgba(255,255,255,0.5);
+}
+
+/* button */
+.topbar nav form button {
+    border: none;
+    padding: 6px 12px;
+
+    border-radius: 10px;
+
+    background: rgba(255,255,255,0.10);
+    color: rgba(255,255,255,0.9);
+
+    transition: 0.25s;
+}
+
+.topbar nav form button:hover {
+    background: rgba(255,255,255,0.18);
+    transform: scale(1.05);
+}
+
+/* ================= LOGOUT ================= */
+.logout-box button {
+    background: rgba(255,255,255,0.10);
+    color: rgba(255,255,255,0.9);
+
+    border: none;
+    padding: 7px 14px;
+
+    border-radius: 10px;
+
+    transition: 0.25s;
+}
+
+.logout-box button:hover {
+    background: rgba(255,255,255,0.18);
+    transform: translateY(-2px);
+}
+
+/* ================= LOGO ================= */
+.logo-icon {
+    background: rgba(255,255,255,0.12);
+    color: #38bdf8;
+}
+
+.logo-text {
+    color: rgba(255,255,255,0.9);
+    font-weight: 600;
+}
+
+.logo-text strong {
+    background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="container">
 
- <h1>
-  <a href="{% url 'home' %}">
-    <i class="bi bi-building me-2"></i> Civic Complaint
-  </a>
+<header class="topbar">
+  <div class="container">
+   <h1 class="premium-logo">
+    <span class="logo-icon">
+        <i class="bi bi-shield-check"></i>
+    </span>
+    <span class="logo-text">
+        Civic <strong>Complaint</strong>
+    </span>
 </h1>
 
-
-      <nav>
+    <nav>
       {% if user.is_authenticated %}
-   <!-- Dashboard for all -->
-        <a href="{% url 'dashboard' %}">
-          <i class="bi bi-speedometer2"></i> Dashboard
-        </a>
+        <a href="{% url 'dashboard' %}"><i class="bi bi-speedometer2"></i> Dashboard</a>
 
-     {% if user.role == 'CITIZEN' %}
+        {% if user.role == 'CITIZEN' %}
+          <a href="{% url 'citizen_profile_view' %}"><i class="bi bi-person-circle"></i> Profile</a>
+        {% elif user.role == 'WORKER' %}
+          <a href="{% url 'worker_profile' %}"><i class="bi bi-person-circle"></i> Profile</a>
+        {% endif %}
 
-<a href="{% url 'citizen_profile_view' %}">
-            <i class="bi bi-person-circle"></i> Profile
-          </a>
+        {% if user.role == 'ADMIN' %}
+          <a href="{% url 'worker_list' %}"><i class="bi bi-people-fill"></i> Workers</a>
+          <a href="{% url 'citizen_list' %}"><i class="bi bi-people"></i> Citizens</a>
+        {% endif %}
 
+        {% if user.is_superuser %}
+          <a href="{% url 'admin_create' %}">Create Admin</a>
+        {% endif %}
 
-  {% elif user.role == 'WORKER' %}
-     <a href="{% url 'worker_profile' %}">
-            <i class="bi bi-person-circle"></i> Profile
-          </a>
-  {% endif %}
+        <form method="get" action="{% url 'global_task_search' %}">
+          <input type="text" name="q" placeholder="Search Task Code..." required />
+          <button type="submit">Search</button>
+        </form>
 
-          {% if user.role == 'ADMIN' %}
-          <a href="{% url 'worker_list' %}">
-            <i class="bi bi-people-fill"></i> Workers
-          </a>
-          <a href="{% url 'citizen_list' %}">
-            <i class="bi bi-people"></i> Citizens
-          </a>
-          {% endif %}
-          {% if user.is_superuser %}
-            <a href="{% url 'admin_create' %}">Create Admin</a>
-          {% endif %}
-
-          <!-- Logout button box -->
-         <div class="logout-box">
+        <div class="logout-box">
           <form method="post" action="{% url 'logout' %}">
             {% csrf_token %}
-            <button type="submit">
-              <i class="bi bi-box-arrow-right"></i> Logout
-            </button>
+            <button type="submit"><i class="bi bi-box-arrow-right"></i> Logout</button>
           </form>
         </div>
 
-       {% else %}
+      {% else %}
+        <a href="{% url 'landing' %}">Home</a>
+        <a href="{% url 'about_page' %}">About Us</a>
+        <a href="{% url 'services_page' %}">Our Services</a>
+        <a href="{% url 'contact_page' %}">Contact</a>
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'signup_citizen' %}">Sign up</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>
 
-  <a href="{% url 'landing' %}"><i class="bi bi-house-door-fill"></i> Home</a>
-  <a href="{% url 'login' %}"><i class="bi bi-box-arrow-in-right"></i> Login</a>
-  <a href="{% url 'signup_citizen' %}"><i class="bi bi-person-plus-fill"></i> Sign up</a>
-{% endif %}
+{% block main_content %}
+<main class="container">
+  {% for message in messages %}
+    <div class="msg {{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+  {% block content %}{% endblock %}
+</main>
+{% endblock %}
 
-      </nav>
-    </div>
-  </header>
+<footer class="footer">
+  <div class="container">
+    <small>© {{ now|date:"Y" }} Civic Complaint</small>
+  </div>
+</footer>
 
-  <main class="container mt-4">
-    {% for message in messages %}
-      <div class="msg {{ message.tags }}">{{ message }}</div>
-    {% endfor %}
-    {% block content %}{% endblock %}
-  </main>
-
-
-</div><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-<div style="text-align: center; margin-top: 40px;">
-  <div id="clock" style="font-size: 18px; font-weight: bold; color: #555;"></div>
-</div>
-
-<script>
-  function updateClock() {
-    const now = new Date();
-    const options = {
-      weekday: 'short',
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: true
-    };
-    const formattedTime = now.toLocaleString('en-US', options);
-    document.getElementById('clock').innerHTML = " Current Time: " + formattedTime;
-  }
-
-  setInterval(updateClock, 1000);
-  updateClock();
-</script>
-
-
-
-
-  <footer class="footer">
-    <div class="container">
-      <small>© {{ now|date:"Y" }} Civic Complaint</small>
-    </div>
-  </footer>
 </body>
 </html>

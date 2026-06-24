@@ -2,63 +2,74 @@
 {% load static %}
 
 {% block content %}
+
 <div class="container mt-4">
     <h2 class="text-center mb-4">My Profile</h2>
 
     <div class="row justify-content-center">
 
+        <!-- PROFILE CARD -->
         <div class="col-md-4">
-            <div class="card shadow-sm p-3 text-center">
-                {% if profile.photo %}
-                    <img src="{{ profile.photo.url }}" class="rounded-circle mb-3" width="120" height="120">
-                {% else %}
-                    <img src="{% static 'img/default-profile.png' %}" class="rounded-circle mb-3" width="120" height="120">
-                {% endif %}
+            <div class="card profile-card p-3 text-center">
 
+       {% if profile.photo %}
+    <img src="{{ profile.photo.url }}"
+         style="width:120px; height:120px; border-radius:50%; object-fit:cover; display:block; margin:0 auto 15px auto;">
+{% else %}
+    <img src="{% static 'img/default-profile.png' %}"
+         style="width:120px; height:120px; border-radius:50%; object-fit:cover; display:block; margin:0 auto 15px auto;">
+{% endif %}
                 <p><strong>Name:</strong> {{ request.user.first_name }} {{ request.user.last_name }}</p>
                 <p><strong>Email:</strong> {{ request.user.email }}</p>
-                <p class="text-muted mb-1"><b>Phone:</b> {{ profile.phone }}</p>
-                <p class="text-muted mb-1"><b>Address:</b> {{ profile.address }}</p>
-                <p class="text-muted"><b>Skills:</b> {{ profile.skills }}</p>
+                <p><strong>Phone:</strong> {{ profile.phone }}</p>
+                <p><strong>Address:</strong> {{ profile.address }}</p>
+                <p><strong>Skills:</strong> {{ profile.skills }}</p>
             </div>
         </div>
 
+        <!-- PERFORMANCE -->
         <div class="col-md-4">
-            <div class="card shadow-sm p-3">
-             <h3 class="text-center mb-3" style="font-weight:bold;">Performance Overview</h3>
+            <div class="card profile-card p-3">
 
+                <h3 class="text-center mb-3">Performance Overview</h3>
 
+                <div class="performance-grid">
 
-                <div class="d-flex justify-content-between text-center mb-3">
-                    <div class="p-2 bg-warning rounded flex-fill mx-1">
-                        <strong>Pending</strong><br>{{ pending }}
+                    <div class="perf-card pending">
+                        <span>Pending</span>
+                        <h4>{{ pending }}</h4>
                     </div>
-                    <div class="p-2 bg-info rounded flex-fill mx-1 text-white">
-                        <strong>In Progress</strong><br>{{ in_progress }}
+
+                    <div class="perf-card progress">
+                        <span>In Progress</span>
+                        <h4>{{ in_progress }}</h4>
                     </div>
-                    <div class="p-2 bg-success rounded flex-fill mx-1 text-white">
-                        <strong>Completed</strong><br>{{ completed }}
+
+                    <div class="perf-card completed">
+                        <span>Completed</span>
+                        <h4>{{ completed }}</h4>
                     </div>
+
                 </div>
-
 
                 <canvas id="performanceChart" width="250" height="250"></canvas>
             </div>
         </div>
+
     </div>
 </div>
 
-<!-- Chart.js -->
+<!-- CHART -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 var ctx = document.getElementById('performanceChart').getContext('2d');
-var chart = new Chart(ctx, {
+new Chart(ctx, {
     type: 'pie',
     data: {
         labels: ['Pending','In Progress','Completed'],
         datasets: [{
             data: [{{ pending }}, {{ in_progress }}, {{ completed }}],
-            backgroundColor: ['#ffc107','#17a2b8','#28a745'],
+            backgroundColor: ['#6c757d','#17a2b8','#28a745'],
             borderColor: '#fff',
             borderWidth: 1
         }]
@@ -66,23 +77,66 @@ var chart = new Chart(ctx, {
     options: {
         responsive: false,
         plugins: {
-            legend: { position: 'bottom' },
-            tooltip: {
-                callbacks: {
-                    label: function(context) {
-                        let total = {{ total_tasks }};
-                        let value = context.parsed;
-                        let percentage = total ? ((value / total) * 100).toFixed(1) : 0;
-                        return context.label + ': ' + value + ' (' + percentage + '%)';
-                    }
-                }
-            },
-            title: {
-                display: true,
-                text: 'Task Distribution'
-            }
+            legend: { position: 'bottom' }
         }
     }
 });
 </script>
+
+<!-- STYLE (ONLY ADD IMAGE + SMALL CARDS FIX) -->
+<style>
+
+/* BACKGROUND SAME */
+body {
+    background: linear-gradient(135deg, #67c7c0, #7fa8c9) !important;
+}
+
+.container {
+    background: transparent !important;
+}
+
+/* CARD */
+.profile-card {
+    border: none;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.25);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+}
+
+/* TEXT */
+.profile-card p,
+.profile-card strong {
+    color: #1e293b;
+}
+
+
+
+/* ✔ SMALL SUMMARY BOX */
+.perf-card {
+    padding: 6px 8px;   /* smaller */
+    border-radius: 10px;
+    color: white;
+    margin-bottom: 6px;
+    font-size: 12px;    /* smaller text */
+}
+
+.perf-card h4 {
+    font-size: 16px;
+    margin: 0;
+}
+
+/* COLORS SAME */
+.perf-card.pending { background: #6c757d; }
+.perf-card.progress { background: #17a2b8; }
+.perf-card.completed { background: #28a745; }
+
+h2, h3 {
+    color: #fff;
+}
+
+
+</style>
+
 {% endblock %}

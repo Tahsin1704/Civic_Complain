@@ -1,37 +1,203 @@
 {% extends "accounts/base.html" %}
 {% load static %}
 {% block content %}
-<h2>Update Profile</h2>
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <p>
-        <label>First name:</label><br>
-        {{ form.first_name }}
-    </p>
-    <p>
-        <label>Last name:</label><br>
-        {{ form.last_name }}
-    </p>
-    <p>
-        <label>Email:</label><br>
-        {{ form.email }}
-    </p>
-    <p>
-        <label>Address:</label><br>
-        {{ form.address }}
-    </p>
-    <p>
-        <label>Photo:</label><br>
-        {% if user.photo %}
-            <img src="{{ user.photo.url }}" alt="Profile Photo" width="150" style="display:block; margin-bottom:10px;">
-        {% else %}
-            No photo uploaded
-        {% endif %}
-        {{ form.photo }}
-    </p>
+<div class="profile-update-container">
 
-    <button type="submit" class="btn btn-success"> Update</button>
-    <a href="{% url 'citizen_profile_view' %}" class="btn">Back</a>
-</form>
+    <h2>Update Profile</h2>
+
+    <form method="post" enctype="multipart/form-data" class="update-form">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>First name</label>
+            {{ form.first_name }}
+        </div>
+
+        <div class="form-group">
+            <label>Last name</label>
+            {{ form.last_name }}
+        </div>
+
+        <div class="form-group">
+            <label>Email</label>
+            {{ form.email }}
+        </div>
+
+        <div class="form-group">
+            <label>Address</label>
+            {{ form.address }}
+        </div>
+
+        <!-- PHOTO -->
+        <div class="form-group">
+
+            <label>Photo</label>
+
+            <div class="worker-photo-box">
+
+                <div class="img-preview">
+                    {% if user.photo %}
+                        <img src="{{ user.photo.url }}" class="worker-img">
+                    {% else %}
+                        <img src="{% static 'images/default-user.png' %}" class="worker-img">
+                    {% endif %}
+                    <small>Current Photo</small>
+                </div>
+
+                <div class="img-upload">
+                    {{ form.photo }}
+                    <small>Change Photo</small>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="button-group">
+            <button type="submit" class="btn-update">Update Profile</button>
+            <a href="{% url 'citizen_profile_view' %}" class="btn-back">Back</a>
+        </div>
+
+    </form>
+
+</div>
+
+<style>
+
+/* ================= CONTAINER ================= */
+.profile-update-container{
+    max-width: 700px;
+    margin: 30px auto;
+    padding: 25px;
+
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(18px);
+
+    border-radius: 18px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+/* TITLE */
+.profile-update-container h2{
+    text-align: center;
+    margin-bottom: 20px;
+    color: #0f766e;
+}
+
+/* INPUTS */
+.profile-update-container input,
+.profile-update-container select,
+.profile-update-container textarea{
+    width: 100%;
+    height: 42px;
+
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: none;
+
+    background: rgba(255,255,255,0.85);
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+/* TEXTAREA */
+.profile-update-container textarea{
+    height: 90px;
+    resize: none;
+}
+
+/* ================= PHOTO BOX ================= */
+.worker-photo-box{
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+
+    margin-top: 10px;
+    padding: 15px;
+
+    border-radius: 14px;
+    background: rgba(255,255,255,0.22);
+    backdrop-filter: blur(12px);
+}
+
+.worker-img{
+    width: 120px;
+    height: 120px;
+
+    object-fit: cover;
+    border-radius: 12px;
+
+    border: 2px solid rgba(15,118,110,0.6);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* ================= BUTTONS (FINAL PERFECT FIX) ================= */
+.button-group{
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* ISOLATED BUTTON SYSTEM (NO OUTSIDE CSS CAN BREAK IT) */
+.button-group .btn-update,
+.button-group .btn-back{
+    flex: 1;
+    height: 44px;
+
+    display: inline-flex;   /* ✔ safer than flex in some cases */
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 !important;
+    margin: 0 !important;
+
+    line-height: 1 !important;
+
+    border-radius: 10px;
+
+    font-weight: 500;
+    color: #fff;
+    text-decoration: none;
+
+    background: linear-gradient(135deg,#67c7c0,#7fa8c9);
+
+    border: 1px solid rgba(255,255,255,0.25);
+
+    box-sizing: border-box;
+
+    vertical-align: middle; /* ✔ fixes baseline issue */
+
+    position: relative;
+    top: 0;
+
+    transition: 0.3s ease;
+}
+
+/* button reset */
+.button-group .btn-update{
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+/* hover */
+.button-group .btn-update:hover,
+.button-group .btn-back:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.15);
+}
+
+/* hide django default file extras */
+.clearable-file-input,
+.clearable-file-input span,
+.clearable-file-input label,
+input[type="checkbox"]{
+    display: none !important;
+}
+
+</style>
+
 {% endblock %}

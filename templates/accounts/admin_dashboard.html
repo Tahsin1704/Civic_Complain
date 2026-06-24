@@ -3,127 +3,217 @@
 
 {% block content %}
 <div class="container mt-4">
+  <h2>Admin Dashboard</h2>
 
-  <!-- Dashboard heading -->
-  <h2 class="mb-4">Admin Dashboard</h2>
-
-  <!-- Search -->
-  <form method="get" action="{% url 'admin_task_search' %}" class="d-flex mb-4">
-      <input type="text" name="q" class="form-control me-2" placeholder="Enter Task Code..." required>
-      <button type="submit" class="btn btn-primary">Search</button>
-  </form>
-
-  <!-- Stats cards -->
-  <div class="row mb-4">
-    <div class="col-md-3">
-      <div class="card text-white bg-primary mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Total Complaints</h5>
-          <p class="card-text">{{ total_complaints }}</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="card text-white bg-warning mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Pending Complaints</h5>
-          <p class="card-text">{{ pending_complaints }}</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-3">
-      <div class="card text-white bg-success mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Resolved Complaints</h5>
-          <p class="card-text">{{ resolved_complaints }}</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="card text-white bg-info mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Active Workers</h5>
-          <p class="card-text">{{ active_workers }}</p>
-        </div>
-      </div>
-    </div>
+  <!-- Summary Cards -->
+  <div class="summary-container">
+    <button id="btn-all" class="summary-box active" onclick="showSection('all')">
+      <p class="summary-text">Total Complaints</p>
+      <h4 class="summary-number">{{ total_complaints }}</h4>
+    </button>
+    <button id="btn-pending" class="summary-box" onclick="showSection('pending')">
+      <p class="summary-text">Pending Complaints</p>
+      <h4 class="summary-number">{{ pending_complaints }}</h4>
+    </button>
+    <button id="btn-resolved" class="summary-box" onclick="showSection('resolved')">
+      <p class="summary-text">Resolved Complaints</p>
+      <h4 class="summary-number">{{ resolved_complaints }}</h4>
+    </button>
+    <button id="btn-active" class="summary-box" onclick="showSection('active')">
+      <p class="summary-text">Active Workers</p>
+      <h4 class="summary-number">{{ workers|length }}</h4>
+    </button>
   </div>
 
-  <!-- Recent Complaints -->
-  <h3 class="mt-4">Recent Complaints</h3>
-  <table class="table table-bordered table-striped text-start">
-    <thead class="table-dark">
+  <!-- Active Workers List -->
+  <div id="active-workers" style="display:none; margin-bottom:20px; border:1px solid #eee; padding:10px;">
+    <h3>Active Workers</h3>
+    <ul>
+      {% for w in workers %}
+        <li>{{ w.first_name }} {{ w.last_name }} ({{ w.email }})</li>
+      {% empty %}
+        <li>No active workers</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Complaints Table -->
+  <h3 class="mt-4" id="table-title">All Complaints</h3>
+  <table class="table civic-table text-start" id="complaints-table">
+  <thead>
       <tr>
         <th>ID</th>
         <th>Task Code</th>
         <th>Title</th>
         <th>Category</th>
-        <th>Location</th>
-        <th>Priority</th>
 
+        <th>Priority</th>
         <th>Status</th>
         <th>Assigned To</th>
         <th>Photo</th>
-        <th>Description</th>
-        <th>Instructions</th>
+
         <th>Actions</th>
       </tr>
     </thead>
     <tbody>
-      {% for c in recent_tasks %}
-        <tr>
-          <td>{{ c.id }}</td>
-          <td>{{ c.task_code }}</td>
-       <td>
-  {{ c.title }}
+      {% for c in tasks %}
+      <tr data-status="{{ c.status|lower }}" data-assigned="{% if c.assigned_to %}yes{% else %}no{% endif %}">
+        <td>{{ c.id }}</td>
+        <td>{{ c.task_code }}</td>
+        <td>{{ c.title }}</td>
+        <td>{{ c.category }}</td>
+
+        <td>{{ c.priority|title }}</td>
+        <td>{{ c.status }}</td>
+        <td>
+          {% if c.assigned_to %}
+            {% if c.assigned_to.first_name or c.assigned_to.last_name %}
+              {{ c.assigned_to.first_name }} {{ c.assigned_to.last_name }}
+            {% else %}
+              {{ c.assigned_to.email }}
+            {% endif %}
+          {% else %}
+            <em>Not assigned</em>
+          {% endif %}
+        </td>
+        <td>
+          {% if c.task_photo %}
+            <img src="{{ c.task_photo.url }}" alt="Task Photo" style="width:80px;">
+          {% else %}
+            <em>No photo</em>
+          {% endif %}
+        </td>
+
+        <td class="table-actions">
+
+  {% if not c.assigned_to %}
+    <a href="{% url 'assign_task' c.id %}" class="btn-assign">
+      Assign
+    </a>
+  {% endif %}
+
+  <a href="{% url 'task_preview' c.id %}" class="btn-preview">
+    Preview
+  </a>
 
 </td>
-
-          <td>{{ c.category }}</td>
-          <td>{{ c.location }}</td>
-          <td>{{ c.priority }}</td>
-
-
-
-          <td>{{ c.status }}</td>
-          <td>
-            {% if c.assigned_to %}
-              {% if c.assigned_to.first_name or c.assigned_to.last_name %}
-                {{ c.assigned_to.first_name }} {{ c.assigned_to.last_name }}
-              {% else %}
-                {{ c.assigned_to.email }}
-              {% endif %}
-            {% else %}
-              <em>Not assigned</em>
-            {% endif %}
-          </td>
-          <td>
-            {% if c.task_photo %}
-              <img src="{{ c.task_photo.url }}" alt="Task Photo" style="width:80px; height:auto;">
-            {% else %}
-              <em>No photo</em>
-            {% endif %}
-          </td>
-          <td>{{ c.description|truncatechars:50 }}</td>
-          <td>{{ c.instructions|truncatechars:50 }}</td>
-           <td>
-          {% if not c.assigned_to %}
-            <a href="{% url 'assign_task' c.id %}" class="btn btn-sm btn-success">Assign</a>
-          {% endif %}
-          <a href="{% url 'task_preview' c.id %}" class="btn btn-sm btn-info">Preview</a>
-          <form method="post" action="{% url 'task_delete' c.id %}" style="display:inline;">
-            {% csrf_token %}
-
-          </form>
-        </td>
-        </tr>
+      </tr>
       {% empty %}
-        <tr>
-          <td colspan="12">No complaints yet.</td>
-        </tr>
+      <tr>
+        <td colspan="12">No complaints yet.</td>
+      </tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
+
+<style>
+.summary-container {
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+  margin-bottom:20px;
+}
+
+.summary-box {
+  flex:1;
+  text-align:center;
+  padding:15px;
+  border-radius:8px;
+  background:#fff;
+  cursor:pointer;
+  border:none;
+  transition:0.3s;
+  min-width:120px;
+}
+
+.summary-box:hover {
+  background:#f0f0f0;
+}
+
+.summary-box.active {
+  background:#007bff;
+  color:#fff;
+  font-weight:bold;
+}
+
+.summary-text {
+  font-weight:bold;
+  margin:0;
+}
+
+.summary-number {
+  font-size:24px;
+  margin:5px 0 0 0;
+}
+  .table td img{
+    width: 90px;
+    height: 70px;
+
+    object-fit: cover;   /* IMPORTANT → crop nicely */
+    border-radius: 10px;
+
+    border: 2px solid rgba(59,130,246,0.3);
+
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+
+    transition: 0.3s ease;
+}
+
+/* hover effect (optional nice feel) */
+.table td img:hover{
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.18);
+}
+</style>
+
+<script>
+function showSection(section) {
+  const rows = document.querySelectorAll("#complaints-table tbody tr");
+  const table = document.getElementById("complaints-table");
+  const tableTitle = document.getElementById("table-title");
+  const activeWorkers = document.getElementById("active-workers");
+
+  // Reset
+  rows.forEach(r => r.style.display = "");
+  table.style.display = "";
+  tableTitle.style.display = "block";
+  activeWorkers.style.display = "none";
+
+  if(section === "pending") {
+    rows.forEach(r => {
+      const status = r.dataset.status;
+      const assigned = r.dataset.assigned;
+      if(status !== "new" || assigned !== "no") {
+        r.style.display = "none";
+      }
+    });
+    tableTitle.textContent = "Pending Complaints";
+  }
+
+  else if(section === "resolved") {
+    rows.forEach(r => {
+      if(r.dataset.status !== "completed") {
+        r.style.display = "none";
+      }
+    });
+    tableTitle.textContent = "Resolved Complaints";
+  }
+
+  else if(section === "active") {
+    table.style.display = "none";
+    tableTitle.style.display = "none";
+    activeWorkers.style.display = "block";
+  }
+
+  else {
+    tableTitle.textContent = "All Complaints";
+  }
+
+  // Active button highlight
+  document.querySelectorAll(".summary-box").forEach(btn => btn.classList.remove("active"));
+  document.getElementById("btn-" + section).classList.add("active");
+}
+</script>
+
 {% endblock %}

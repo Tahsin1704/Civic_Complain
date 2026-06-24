@@ -2,14 +2,7 @@
 {% block content %}
 <div class="container mt-4">
 
-    <h3>
-        {% if new_task %}
-            Task Details ({{ task.title }})
-        {% else %}
-            Update Task Status ({{ task.title }})
-        {% endif %}
-    </h3>
-    <p><strong>Status:</strong> {{ task.status|title }}</p>
+
 
     <!-- Citizen-provided Before Photo -->
     {% if task.before_photo %}
@@ -19,6 +12,9 @@
 
     <!-- NEW TASK → show start button -->
     {% if new_task %}
+
+    <p><strong>Task Code:</strong> {{ task.task_code }}</p>
+    <p><strong>Title:</strong> {{ task.title }}</p>
         <p><strong>Category:</strong> {{ task.category }}</p>
         <p><strong>Location:</strong> {{ task.location }}</p>
         <p><strong>Priority:</strong> {{ task.priority|title }}</p>
@@ -35,12 +31,19 @@
     {% endif %}
 
 
-        <form method="post">
-            {% csrf_token %}
-            <button type="submit" name="start_task" class="btn btn-success mt-3">Start Task</button>
-            <a href="{% url 'worker_dashboard' %}" class="btn btn-secondary mt-3">Back</a>
-        </form>
+        <form method="post" class="btn-row">
+    {% csrf_token %}
+
+    <button type="submit" name="start_task" class="btn-start">
+        Start Task
+    </button>
+
+    <a href="{% url 'worker_dashboard' %}" class="btn-back">
+        Back
+    </a>
+</form>
     {% endif %}
+
 
     <!-- IN PROGRESS → update form -->
     {% if task.status == "in_progress" %}
@@ -101,16 +104,242 @@
             window.addEventListener('load', toggleAfterPhoto);
         </script>
     {% endif %}
+{% if task.status == "completed" %}
 
-    <!-- COMPLETED → view only -->
-    {% if task.status == "completed" %}
-        {% if task.after_photo %}
-            <p><strong>After Work Photo:</strong></p>
-            <img src="{{ task.after_photo.url }}" style="max-width:300px; border-radius:8px; margin-top:10px;">
-        {% endif %}
-        <p class="text-success mt-2"><strong> This task is completed.</strong></p>
-        <a href="{% url 'worker_dashboard' %}" class="btn btn-secondary mt-2">Back</a>
-    {% endif %}
+<div class="task-card modern-card">
+
+    <h4 class="section-title">Completed Task Details</h4>
+
+    <table class="modern-table">
+
+        <tr>
+            <th>Task Code</th>
+            <td>{{ task.task_code }}</td>
+        </tr>
+
+        <tr>
+            <th>Title</th>
+            <td>{{ task.title }}</td>
+        </tr>
+
+        <tr>
+            <th>Description</th>
+            <td>{{ task.description|default:"-" }}</td>
+        </tr>
+
+        <tr>
+            <th>Category</th>
+            <td>{{ task.category }}</td>
+        </tr>
+
+        <tr>
+            <th>Location</th>
+            <td>{{ task.location }}</td>
+        </tr>
+
+        <tr>
+            <th>Work Description</th>
+            <td>{{ task.work_description|default:"-" }}</td>
+        </tr>
+
+        <tr>
+            <th>Materials Used</th>
+            <td>{{ task.materials_used|default:"-" }}</td>
+        </tr>
+
+        <tr>
+            <th>Additional Notes</th>
+            <td>{{ task.additional_notes|default:"-" }}</td>
+        </tr>
+
+        <tr>
+            <th>Before Work</th>
+            <td>
+                {% if task.task_photo %}
+                    <img src="{{ task.task_photo.url }}" class="table-img" >
+                {% else %}
+                    No image
+                {% endif %}
+            </td>
+        </tr>
+
+        <tr>
+            <th>After Work</th>
+            <td>
+                {% if task.after_photo %}
+                    <img src="{{ task.after_photo.url }}" class="table-img">
+                {% else %}
+                    No image
+                {% endif %}
+            </td>
+        </tr>
+
+    </table>
+     </div>
+<div class="done-text">
+    ✔ This work is done
+</div>
+
+    <div class="btn-area">
+        <a href="{% url 'worker_dashboard' %}" class="btn-back">← Back</a>
+
+</div>
+
+
+{% endif %}
+
+
+    <style>
+
+        .modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+
+    /* 🔥 CLEAN READABLE BACKGROUND */
+    background: rgba(241, 245, 249, 0.85); /* soft blue-gray */
+
+    border-radius: 14px;
+    overflow: hidden;
+
+    /* clear border */
+    border: 1px solid rgba(148, 163, 184, 0.4);
+
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.modern-table th,
+.modern-table td {
+    padding: 14px 16px;
+    text-align: left;
+
+    color: #0f172a; /* dark text for readability */
+    border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.modern-table th {
+    width: 30%;
+    color: #0369a1; /* blue accent */
+    font-weight: 600;
+
+    background: rgba(226, 232, 240, 0.6);
+}
+
+.modern-table tr:hover {
+    background: rgba(186, 230, 253, 0.5);
+}
+
+.table-img {
+    width: 160px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+
+    border: 2px solid rgba(59, 130, 246, 0.3);
+}
+
+/* BUTTON */
+.btn-back {
+    padding: 10px 16px;
+    background: #64748b;
+    color: white;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.btn-back:hover {
+    background: #475569;
+}
+        .done-text {
+    margin-top: 18px;
+    padding: 12px 18px;
+
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+
+    /* 🔥 STRONG GREEN TEXT */
+    color: #166534;
+
+    /* 🔥 CLEAN SUCCESS BACKGROUND */
+    background: rgba(34, 197, 94, 0.20);
+
+    /* 🔥 CLEAR BORDER */
+    border: 1px solid rgba(34, 197, 94, 0.6);
+
+    border-radius: 12px;
+
+}
+.btn-row{
+    display: flex;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+/* COMMON BUTTON STYLE */
+.btn-start,
+.btn-back{
+    flex: 1;
+
+    height: 44px;      /* SAME HEIGHT */
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+    margin: 0;
+
+    border-radius: 12px;
+
+    font-weight: 500;
+    color: #fff;
+    text-decoration: none;
+
+    border: 1px solid rgba(255,255,255,0.25);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    box-shadow:
+        0 8px 18px rgba(0,0,0,0.18),
+        inset 0 1px 1px rgba(255,255,255,0.15);
+
+    transition: 0.3s ease;
+    cursor: pointer;
+}
+
+/* START BUTTON (GREEN GLASS) */
+.btn-start{
+    background: linear-gradient(
+        135deg,
+        rgba(22,163,74,0.85),
+        rgba(21,128,61,0.85)
+    );
+    border: none;
+}
+
+/* BACK BUTTON (BLUE GLASS) */
+.btn-back{
+    background: linear-gradient(
+        135deg,
+        rgba(59,130,246,0.85),
+        rgba(99,102,241,0.85)
+    );
+}
+
+/* HOVER */
+.btn-start:hover,
+.btn-back:hover{
+    transform: translateY(-3px);
+    box-shadow:
+        0 14px 30px rgba(0,0,0,0.28),
+        inset 0 1px 1px rgba(255,255,255,0.2);
+}
+    </style>
+
 
 </div>
 {% endblock %}

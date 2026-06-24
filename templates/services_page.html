@@ -1,0 +1,45 @@
+{% extends "accounts/base.html" %}
+{% load static %}
+{% block content %}
+
+<section class="services-section">
+  <h1>Our Services</h1>
+
+  <ul>
+    <li>Submit Complaints</li>
+    <li>Real-time Status Tracking</li>
+    <li>Provide Image after the Work is done!!</li>
+
+  </ul>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="main-footer">
+  <div class="footer-container">
+   <div class="footer-col about-footer">
+  <h3>About Civic System</h3>
+  <p>
+    Smart Civic Complain Management System lets citizens report public issues quickly. Complaints are
+    received by admins, assigned to workers, and tracked in real-time until resolved, ensuring
+    fast and transparent service.
+  </p>
+</div>
+
+ <div class="footer-col">
+  <h3>Quick Links</h3>
+  <ul>
+    <li><a href="{% url 'landing' %}" class="home-link">Home</a></li>
+    <li><a href="{% url 'about_page' %}">About Us</a></li>
+    <li><a href="{% url 'services_page' %}">Our Services</a></li>
+    <li><a href="{% url 'contact_page' %}">Contact</a></li>
+  </ul>
+</div>
+    <div class="footer-col">
+      <h3>Address </h3>
+      <p> Green Smart City <br>Dhaka, Bangladesh<br>📞 +8801746689122 <br>Email: tahsinzaman20@gmail.com</p>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 Smart Civic Management System</div>
+</footer>
+
+{% endblock %}

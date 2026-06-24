@@ -1,75 +1,225 @@
 {% extends "accounts/base.html" %}
 {% load static %}
 {% block content %}
-<div class="container mt-5">
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">Citizen Preview</h3>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <!-- Left: Photo -->
-                <div class="col-md-4 text-center">
-                    {% if citizen.photo %}
-                        <img src="{{ citizen.photo.url }}" class="rounded-circle shadow" style="width:180px; height:180px; object-fit:cover;">
-                    {% elif citizen.citizen_profile and citizen.citizen_profile.photo %}
-                        <img src="{{ citizen.citizen_profile.photo.url }}" class="rounded-circle shadow" style="width:180px; height:180px; object-fit:cover;">
-                    {% else %}
-                        <img src="{% static 'images/default-user.png' %}" class="rounded-circle shadow" style="width:180px; height:180px; object-fit:cover;">
-                        <p class="mt-2">No photo available</p>
-                    {% endif %}
-                </div>
 
-                <!-- Right: Details -->
-                <div class="col-md-8">
-                    <p><strong>Name:</strong> {{ citizen.first_name }} {{ citizen.last_name }}</p>
-                    <p><strong>Email:</strong> {{ citizen.email }}</p>
-                    {% if citizen.address %}
-                        <p><strong>Address:</strong> {{ citizen.address }}</p>
-                    {% elif citizen.citizen_profile.address %}
-                        <p><strong>Address:</strong> {{ citizen.citizen_profile.address }}</p>
-                    {% else %}
-                        <p><strong>Address:</strong> N/A</p>
-                    {% endif %}
-                </div>
+<style>
+
+/* =========================
+   ROOT THEME
+========================= */
+:root {
+  --primary-1: #67c7c0;
+  --primary-2: #7fa8c9;
+
+  --glass-bg: rgba(255,255,255,0.18);
+  --glass-border: rgba(255,255,255,0.35);
+
+  --text-light: #f1f5f9;
+
+  --danger: #dc2626;
+
+  --border-radius: 16px;
+}
+
+/* =========================
+   BACKGROUND
+========================= */
+.citizen-preview-wrapper{
+    min-height: 100vh;
+    padding: 40px 0;
+
+    background: linear-gradient(
+        135deg,
+        var(--primary-1),
+        var(--primary-2)
+    );
+}
+
+/* =========================
+   CARD (GLASS)
+========================= */
+.citizen-preview-wrapper .card{
+    border: none; /* ❌ remove lines */
+    border-radius: var(--border-radius);
+
+    background: var(--glass-bg);
+    backdrop-filter: blur(18px);
+
+    box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+}
+
+/* HEADER */
+.citizen-preview-wrapper .card-header{
+    background: transparent;
+    border-bottom: none; /* ❌ remove line */
+
+    text-align: center; /* ✅ center title */
+    color: white;
+    font-weight: 700;
+}
+
+/* IMAGE */
+.citizen-preview-wrapper img{
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+
+    border-radius: 50%;
+    border: 4px solid var(--glass-border);
+
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+/* TEXT */
+.citizen-preview-wrapper p{
+    margin-bottom: 10px;
+    color: var(--text-light);
+}
+
+.citizen-preview-wrapper strong{
+    color: #ffffff;
+}
+
+/* =========================
+   BUTTON CENTER
+========================= */
+.action-buttons{
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+/* BUTTON STYLE */
+.citizen-preview-wrapper .btn{
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 8px 18px;
+
+    background: rgba(255,255,255,0.15);
+    border: 1px solid var(--glass-border);
+    color: white;
+
+    backdrop-filter: blur(10px);
+    transition: 0.3s ease;
+}
+
+.citizen-preview-wrapper .btn:hover{
+    transform: translateY(-2px);
+    background: rgba(255,255,255,0.3);
+}
+
+/* DELETE */
+.btn-danger{
+    background: rgba(220,38,38,0.25);
+}
+
+/* =========================
+   DELETE FORM
+========================= */
+#deleteForm{
+    margin-top: 20px;
+}
+
+#deleteForm textarea{
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid var(--glass-border);
+
+    background: rgba(255,255,255,0.15);
+    color: white;
+
+    padding: 10px;
+    outline: none;
+}
+
+#deleteForm textarea::placeholder{
+    color: rgba(255,255,255,0.6);
+}
+
+
+</style>
+
+<div class="citizen-preview-wrapper">
+
+    <div class="container">
+
+        <div class="card">
+
+            <!-- HEADER -->
+            <div class="card-header">
+                <h3 class="mb-0">Citizen Preview</h3>
             </div>
 
-            <hr>
+            <!-- BODY -->
+            <div class="card-body">
 
-            <!-- Back button -->
-            <a href="{% url 'citizen_list' %}" class="btn btn-secondary mb-3">Back to Citizen List</a>
+                <div class="row align-items-center">
 
-            <!-- Delete button -->
-            <button id="showDeleteFormBtn" class="btn btn-danger mb-3">Delete Citizen</button>
+                    <!-- IMAGE -->
+                    <div class="col-md-4 text-center mb-3 mb-md-0">
+                        {% if citizen.photo %}
+                            <img src="{{ citizen.photo.url }}">
+                        {% else %}
+                            <img src="{% static 'images/default-user.png' %}">
+                        {% endif %}
+                    </div>
 
-            <!-- Hidden reason form -->
-            <form id="deleteForm" method="post" style="display:none;">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label for="reason" class="form-label"><strong>Reason for deletion:</strong></label>
-                    <textarea name="reason" id="reason" class="form-control" rows="4" placeholder="Enter reason..." required></textarea>
+                    <!-- INFO -->
+                    <div class="col-md-8">
+                        <p><strong>Name:</strong> {{ citizen.first_name }} {{ citizen.last_name }}</p>
+                        <p><strong>Email:</strong> {{ citizen.email }}</p>
+                        <p><strong>Address:</strong>
+                            {% if citizen.address %}
+                                {{ citizen.address }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </p>
+                    </div>
+
                 </div>
-                <button type="submit" class="btn btn-danger">Confirm Delete</button>
-                <button type="button" id="cancelDeleteBtn" class="btn btn-secondary">Cancel</button>
-            </form>
+
+                <!-- BUTTONS -->
+                <div class="action-buttons">
+                    <a href="{% url 'citizen_list' %}" class="btn">Back</a>
+                    <button id="showDeleteFormBtn" class="btn btn-danger">Delete</button>
+                </div>
+
+                <!-- DELETE FORM -->
+                <form id="deleteForm" method="post" style="display:none;">
+                    {% csrf_token %}
+
+                    <textarea name="reason"
+                              rows="3"
+                              placeholder="Reason for deletion..."
+                              required></textarea>
+
+                    <div class="action-buttons mt-2">
+                        <button type="submit" class="btn btn-danger">Confirm Delete</button>
+                        <button type="button" id="cancelDeleteBtn" class="btn">Cancel</button>
+                    </div>
+                </form>
+
+            </div>
 
         </div>
+
     </div>
+
 </div>
 
 <script>
-    const deleteBtn = document.getElementById('showDeleteFormBtn');
-    const deleteForm = document.getElementById('deleteForm');
-    const cancelBtn = document.getElementById('cancelDeleteBtn');
+document.getElementById('showDeleteFormBtn').onclick = function () {
+    document.getElementById('deleteForm').style.display = 'block';
+    this.style.display = 'none';
+};
 
-    deleteBtn.addEventListener('click', () => {
-        deleteForm.style.display = 'block';
-        deleteBtn.style.display = 'none'; // Hide the initial delete button
-    });
-
-    cancelBtn.addEventListener('click', () => {
-        deleteForm.style.display = 'none';
-        deleteBtn.style.display = 'inline-block'; // Show the initial delete button again
-    });
+document.getElementById('cancelDeleteBtn').onclick = function () {
+    document.getElementById('deleteForm').style.display = 'none';
+    document.getElementById('showDeleteFormBtn').style.display = 'inline-block';
+};
 </script>
+
 {% endblock %}

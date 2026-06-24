@@ -1,25 +1,37 @@
 {% extends 'accounts/base.html' %}
+
 {% block navbar %}{% endblock %}
+
+{% block main_content %}
 {% block content %}
 
-<h2>
-  <i class="bi bi-box-arrow-in-right me-2"></i> Login
-</h2>
-<form method="post" class="card form">
-  {% csrf_token %}
-  {{ form.as_p }}
+<div class="auth-wrapper">
 
-  <button type="submit" class="btn btn-primary w-100 mt-2">
-  <i class="bi bi-box-arrow-in-right me-2"></i> Login
-</button>
+  <div class="auth-card">
 
-</form>
+    <h2>
+      <i class="bi bi-box-arrow-in-right me-2"></i> Login
+    </h2>
+
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+
+      <button type="submit" class="auth-btn">
+        Login
+      </button>
+    </form>
+
+    <div style="text-align:center; margin-top:15px; color:white;">
+      Don't have an account?
+     <a href="{% url 'signup_citizen' %}" style="color:white; font-weight:bold; text-decoration:none;">
+    Sign Up
+</a>
+    </div>
+
+  </div>
+
+</div>
+
 {% endblock %}
-
-
-
-
-
-
-
-
+{% endblock %}

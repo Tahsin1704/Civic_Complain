@@ -2,67 +2,214 @@
 {% load static %}
 {% block content %}
 
-<div class="container mt-5">
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">Worker Preview</h3>
-        </div>
-        <div class="card-body">
-            <div class="row">
+<style>
 
-                <div class="col-md-4 text-center">
-                    {% if worker.worker_profile.photo %}
-                        <img src="{{ worker.worker_profile.photo.url }}" class="rounded-circle shadow" style="width:180px; height:180px; object-fit:cover;">
-                    {% else %}
-                        <img src="{% static 'images/default-user.png' %}" class="rounded-circle shadow" style="width:180px; height:180px; object-fit:cover;">
-                    {% endif %}
-                </div>
+/* =========================
+   ROOT THEME
+========================= */
+:root {
+  --primary-1: #67c7c0;
+  --primary-2: #7fa8c9;
 
+  --glass-bg: rgba(255,255,255,0.18);
+  --glass-border: rgba(255,255,255,0.35);
 
-                <div class="col-md-8">
-                    <p><strong>Name:</strong> {{ worker.first_name }} {{ worker.last_name }}</p>
-                    <p><strong>Email:</strong> {{ worker.email }}</p>
-                    <p><strong>Phone:</strong> {{ worker.worker_profile.phone }}</p>
-                    <p><strong>Skills:</strong> {{ worker.worker_profile.skills }}</p>
-                    <p><strong>Address:</strong> {{ worker.worker_profile.address }}</p>
-                </div>
+  --text-light: #f1f5f9;
+
+  --danger: #dc2626;
+  --warning: #facc15;
+
+  --border-radius: 16px;
+}
+
+/* =========================
+   BACKGROUND
+========================= */
+.worker-preview-wrapper{
+    min-height: 100vh;
+    padding: 40px 0;
+    background: linear-gradient(135deg, var(--primary-1), var(--primary-2));
+}
+
+/* =========================
+   CARD (GLASS)
+========================= */
+.worker-preview-wrapper .card{
+    border: none; /* ❌ no border line */
+    border-radius: var(--border-radius);
+    background: var(--glass-bg);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+}
+
+/* HEADER */
+.worker-preview-wrapper .card-header{
+    background: transparent;
+    border-bottom: none; /* ❌ remove line */
+    text-align: center;
+    color: white;
+    font-weight: 700;
+}
+
+/* IMAGE */
+.worker-preview-wrapper img{
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid var(--glass-border);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+/* TEXT */
+.worker-preview-wrapper p{
+    margin-bottom: 10px;
+    color: var(--text-light);
+}
+
+.worker-preview-wrapper strong{
+    color: #ffffff;
+}
+
+/* =========================
+   BUTTON CENTER
+========================= */
+.action-buttons{
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+/* BUTTON STYLE */
+.worker-preview-wrapper .btn{
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 8px 18px;
+
+    background: rgba(255,255,255,0.15);
+    border: 1px solid var(--glass-border);
+    color: white;
+
+    backdrop-filter: blur(10px);
+    transition: 0.3s ease;
+}
+
+.worker-preview-wrapper .btn:hover{
+    transform: translateY(-2px);
+    background: rgba(255,255,255,0.3);
+}
+
+/* VARIANTS */
+.btn-warning{
+    background: rgba(250,204,21,0.25);
+    color: #111;
+}
+
+.btn-danger{
+    background: rgba(220,38,38,0.25);
+}
+
+/* =========================
+   DELETE FORM
+========================= */
+#deleteForm{
+    margin-top: 20px;
+}
+
+#deleteForm textarea{
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255,255,255,0.15);
+    color: white;
+    padding: 10px;
+    outline: none;
+}
+
+#deleteForm textarea::placeholder{
+    color: rgba(255,255,255,0.6);
+}
+
+</style>
+
+<div class="worker-preview-wrapper">
+
+    <div class="container">
+
+        <div class="card">
+
+            <!-- HEADER -->
+            <div class="card-header">
+                <h3 class="mb-0">Worker Preview</h3>
             </div>
 
-            <hr>
+            <!-- BODY -->
+            <div class="card-body">
 
-            <!-- Action buttons -->
-            <a href="{% url 'worker_list' %}" class="btn btn-secondary mb-3">Back to Worker List</a>
-            <a href="{% url 'worker_update' worker.id %}" class="btn btn-warning mb-3">Update Worker</a>
-            <button id="showDeleteFormBtn" class="btn btn-danger mb-3">Delete Worker</button>
+                <div class="row align-items-center">
 
-            <!-- Hidden reason form -->
-            <form id="deleteForm" method="post" style="display:none;">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label for="reason" class="form-label"><strong>Reason for deletion:</strong></label>
-                    <textarea name="reason" id="reason" class="form-control" rows="4" placeholder="Enter reason..." required></textarea>
+                    <!-- IMAGE -->
+                    <div class="col-md-4 text-center mb-3 mb-md-0">
+                        {% if worker.worker_profile.photo %}
+                            <img src="{{ worker.worker_profile.photo.url }}">
+                        {% else %}
+                            <img src="{% static 'images/default-user.png' %}">
+                        {% endif %}
+                    </div>
+
+                    <!-- INFO -->
+                    <div class="col-md-8">
+                        <p><strong>Name:</strong> {{ worker.first_name }} {{ worker.last_name }}</p>
+                        <p><strong>Email:</strong> {{ worker.email }}</p>
+                        <p><strong>Phone:</strong> {{ worker.worker_profile.phone }}</p>
+                        <p><strong>Skills:</strong> {{ worker.worker_profile.skills }}</p>
+                        <p><strong>Address:</strong> {{ worker.worker_profile.address }}</p>
+                    </div>
+
                 </div>
-                <button type="submit" class="btn btn-danger">Confirm Delete</button>
-                <button type="button" id="cancelDeleteBtn" class="btn btn-secondary">Cancel</button>
-            </form>
+
+                <!-- BUTTONS (CENTERED) -->
+                <div class="action-buttons">
+                    <a href="{% url 'worker_list' %}" class="btn">Back</a>
+                    <a href="{% url 'worker_update' worker.id %}" class="btn btn-warning">Update</a>
+                    <button id="showDeleteFormBtn" class="btn btn-danger">Delete</button>
+                </div>
+
+                <!-- DELETE FORM -->
+                <form id="deleteForm" method="post" style="display:none;">
+                    {% csrf_token %}
+
+                    <textarea name="reason"
+                              rows="3"
+                              placeholder="Reason for deletion..."
+                              required></textarea>
+
+                    <div class="action-buttons mt-2">
+                        <button type="submit" class="btn btn-danger">Confirm Delete</button>
+                        <button type="button" id="cancelDeleteBtn" class="btn">Cancel</button>
+                    </div>
+                </form>
+
+            </div>
 
         </div>
+
     </div>
+
 </div>
 
 <script>
-    const deleteBtn = document.getElementById('showDeleteFormBtn');
-    const deleteForm = document.getElementById('deleteForm');
-    const cancelBtn = document.getElementById('cancelDeleteBtn');
+document.getElementById('showDeleteFormBtn').onclick = function () {
+    document.getElementById('deleteForm').style.display = 'block';
+    this.style.display = 'none';
+};
 
-    deleteBtn.addEventListener('click', () => {
-        deleteForm.style.display = 'block';
-        deleteBtn.style.display = 'none'; // Hide the initial delete button
-    });
-
-    cancelBtn.addEventListener('click', () => {
-        deleteForm.style.display = 'none';
-        deleteBtn.style.display = 'inline-block'; // Show the initial delete button again
-    });
+document.getElementById('cancelDeleteBtn').onclick = function () {
+    document.getElementById('deleteForm').style.display = 'none';
+    document.getElementById('showDeleteFormBtn').style.display = 'inline-block';
+};
 </script>
+
 {% endblock %}

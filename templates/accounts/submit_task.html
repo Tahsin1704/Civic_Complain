@@ -3,12 +3,100 @@
 {% block content %}
 <div class="container mt-4">
     <h2>Submit New Complaint</h2>
+
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Submit</button>
-        <!-- Cancel / Back Button -->
-       <a href="{% url 'dashboard' %}" class="btn btn-secondary mt-3">← Back to Dashboard</a>
+
+        <!-- BUTTON ROW -->
+        <div class="btn-row">
+
+            <button type="submit" class="btn-glass">
+                Submit
+            </button>
+
+            <a href="{% url 'dashboard' %}" class="btn-glass">
+                ← Back to Dashboard
+            </a>
+
+        </div>
+
     </form>
 </div>
+
+<style>
+
+/* ================= ROW FIX ================= */
+.btn-row{
+    display: flex;
+    gap: 12px;
+    margin-top: 15px;
+
+    align-items: stretch;   /* ✔ IMPORTANT: equal vertical alignment fix */
+}
+
+/* ================= BUTTON BASE ================= */
+.btn-glass{
+    flex: 1;
+    height: 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    text-decoration: none;
+    font-weight: 500;
+    color: white;
+
+    border: 1px solid rgba(255,255,255,0.3);
+
+    background: linear-gradient(
+        135deg,
+        rgba(103,199,192,0.85),
+        rgba(127,168,201,0.85)
+    );
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+
+    transition: 0.3s ease;
+    cursor: pointer;
+}
+
+/* anchor fix (VERY IMPORTANT) */
+a.btn-glass{
+    display: flex;        /* ✔ override inline behavior */
+}
+
+/* button reset */
+button.btn-glass{
+    border: none;
+    font-family: inherit;
+}
+
+/* hover */
+.btn-glass:hover{
+    transform: translateY(-3px);
+    background: linear-gradient(135deg, #3aa8a0, #67c7c0);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+}
+.btn-row{
+    display: flex;
+    gap: 12px;
+    margin-top: 15px;
+
+    align-items: center;
+}
+
+/* শুধু Back button adjust */
+.btn-row a.btn-glass{
+    transform: translateY(2px); /* ✔ একটু নিচে নামানো */
+}
+
+</style>
+
 {% endblock %}

@@ -1,14 +1,157 @@
 {% extends 'accounts/base.html' %}
 {% block content %}
-<h2>Confirm Delete</h2>
-<p>You are about to delete: <strong>{{ user.email }}</strong></p>
-<form method="post" class="card form">
-  {% csrf_token %}
-  {% if user.role == 'CITIZEN' %}
-    <label for="reason">Reason (optional):</label>
-    <textarea name="reason" rows="3"></textarea>
-  {% endif %}
-  <button type="submit" class="btn btn-danger">Delete</button>
-</form>
-<a href="{% url 'citizen_list' %}" class="btn btn-secondary mt-3">← Back to Citizen List</a>
+
+<div class="delete-container">
+
+    <h2>Confirm Delete</h2>
+
+    <p class="info">
+        You are about to delete: <strong>{{ user.email }}</strong>
+    </p>
+
+    <form method="post" class="delete-form">
+        {% csrf_token %}
+
+        {% if user.role == 'CITIZEN' %}
+        <label for="reason">Reason (optional):</label>
+        <textarea name="reason" rows="3"></textarea>
+        {% endif %}
+
+        <!-- BUTTONS -->
+        <div class="btn-group">
+
+            <button type="submit" class="btn-delete">
+                Delete
+            </button>
+
+            <a href="{% url 'citizen_list' %}" class="btn-back">
+                Back to Citizen List
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+<style>
+
+/* ================= CONTAINER ================= */
+.delete-container{
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 25px;
+
+    background: var(--glass-bg);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border-radius: var(--border-radius);
+
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+/* TITLE */
+.delete-container h2{
+    text-align: center;
+    margin-bottom: 15px;
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+/* INFO */
+.info{
+    text-align: center;
+    margin-bottom: 15px;
+    color: var(--text-dark);
+}
+
+/* TEXTAREA */
+.delete-form textarea{
+    width: 100%;
+    padding: 10px;
+
+    border-radius: var(--border-radius);
+    border: 1px solid var(--glass-border);
+
+    background: rgba(255,255,255,0.85);
+
+    box-sizing: border-box;
+}
+
+/* ================= BUTTON ROW (STRICT FIX) ================= */
+.btn-group{
+    display: flex;
+    gap: 12px;
+    margin-top: 15px;
+
+    align-items: stretch;   /* IMPORTANT */
+}
+
+/* ================= FORCE IDENTICAL BUTTON BOX ================= */
+.btn-delete,
+.btn-back{
+    flex: 1;
+
+    width: 100%;           /* FIX WIDTH */
+    height: 44px;          /* FIX HEIGHT */
+
+    display: flex;         /* FORCE SAME BEHAVIOR */
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;            /* REMOVE DEFAULT DIFFERENCE */
+    margin: 0;
+
+    box-sizing: border-box;
+
+    border-radius: var(--border-radius);
+
+    text-decoration: none;
+    font-weight: 500;
+    color: #fff;
+
+    border: 1px solid var(--glass-border);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    box-shadow:
+        0 8px 18px rgba(0,0,0,0.18),
+        inset 0 1px 1px rgba(255,255,255,0.15);
+
+    transition: 0.3s ease;
+    cursor: pointer;
+}
+
+/* ================= DELETE ================= */
+.btn-delete{
+    background: linear-gradient(
+        135deg,
+        rgba(220,38,38,0.85),
+        rgba(185,28,28,0.85)
+    );
+    border: none;
+}
+
+/* ================= BACK ================= */
+.btn-back{
+    background: linear-gradient(
+        135deg,
+        var(--primary-1),
+        var(--primary-2)
+    );
+}
+
+/* ================= HOVER ================= */
+.btn-delete:hover,
+.btn-back:hover{
+    transform: translateY(-3px);
+    box-shadow:
+        0 14px 30px rgba(0,0,0,0.28),
+        inset 0 1px 1px rgba(255,255,255,0.2);
+}
+
+</style>
+
 {% endblock %}

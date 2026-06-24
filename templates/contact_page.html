@@ -1,0 +1,54 @@
+{% extends "accounts/base.html" %}
+{% load static %}
+{% block content %}
+
+<section class="contact-section">
+  <h1>Contact Us</h1>
+
+  <div class="contact-container">
+
+    <div class="contact-box">
+      <h3>Head Office</h3>
+      <p>Green Smart  City,Dhaka</p>
+      <p>TEL : +88 02 8315380</p>
+      <p>Fax : +088-02-8350003</p>
+      <p>Email : tahsinzaman20@gmail.com</p>
+    </div>
+
+    <div class="contact-box">
+      <h3>Call Center</h3>
+      <p>MOB : 01570226015 </p>
+      <p>TEL : +88 02 8331302, +88 02 8331303, +88 02 8331304</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="main-footer">
+  <div class="footer-container">
+   <div class="footer-col about-footer">
+  <h3>About Civic System</h3>
+  <p>
+    Smart Civic Complain  Management System lets citizens report public issues quickly. Complaints are
+    received by admins, assigned to workers, and tracked in real-time until resolved, ensuring
+    fast and transparent service.
+  </p>
+</div>
+
+ <div class="footer-col">
+  <h3>Quick Links</h3>
+  <ul>
+    <li><a href="{% url 'landing' %}" class="home-link">Home</a></li>
+    <li><a href="{% url 'about_page' %}">About Us</a></li>
+    <li><a href="{% url 'services_page' %}">Our Services</a></li>
+    <li><a href="{% url 'contact_page' %}">Contact</a></li>
+  </ul>
+</div>
+    <div class="footer-col">
+      <h3>Address </h3>
+      <p> Green Smart City <br>Dhaka, Bangladesh<br>📞 +8801746689122 <br>Email: tahsinzaman20@gmail.com</p>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 Smart Civic Management System</div>
+</footer>
+{% endblock %}

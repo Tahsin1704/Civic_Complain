@@ -1,20 +1,140 @@
 {% extends "accounts/base.html" %}
 {% block content %}
-<h2>My Profile</h2>
 
-<p><strong>First name:</strong> {{ user.first_name }}</p>
-<p><strong>Last name:</strong> {{ user.last_name }}</p>
-<p><strong>Email:</strong> {{ user.email }}</p>
-<p><strong>Address:</strong> {{ user.address }}</p>
-<p><strong>Photo:</strong><br>
-{% if user.photo %}
-    <img src="{{ user.photo.url }}" alt="Profile Photo" width="150">
-{% else %}
-    No photo uploaded
-{% endif %}
-</p>
+<div class="profile-wrapper">
 
+    <div class="profile-card">
 
-<a href="{% url 'citizen_profile_update' %}" class="btn btn-primary">Update Profile</a>
-<a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+        <!-- PROFILE IMAGE -->
+        <div class="profile-img-box">
+            {% if user.photo %}
+                <img src="{{ user.photo.url }}" class="profile-img">
+            {% else %}
+                <img src="https://via.placeholder.com/150" class="profile-img">
+            {% endif %}
+        </div>
+
+       <div class="profile-info">
+    <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+
+    <div class="info-item"><span>First Name:</span> {{ user.first_name }}</div>
+    <div class="info-item"><span>Last Name:</span> {{ user.last_name }}</div>
+
+    <div class="info-item"><span>Email:</span> {{ user.email }}</div>
+    <div class="info-item"><span>Address:</span> {{ user.address }}</div>
+</div>
+
+        <!-- BUTTONS -->
+        <div class="profile-buttons">
+
+            <a href="{% url 'citizen_profile_update' %}" class="btn-glass">
+                Update Profile
+            </a>
+
+            <a href="{% url 'dashboard' %}" class="btn-glass">
+                Back
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+
+/* PAGE CENTER */
+.profile-wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+/* GLASS CARD */
+.profile-card{
+    width: 380px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+/* CIRCLE IMAGE */
+.profile-img-box{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.profile-img{
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+
+    border: 3px solid rgba(255,255,255,0.6);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* NAME */
+.profile-info h2{
+    margin-bottom: 15px;
+    color: #0f172a;
+}
+
+/* INFO TEXT */
+.info-item{
+    text-align: left;
+    margin: 8px 0;
+    padding: 8px 12px;
+
+    background: rgba(255,255,255,0.25);
+    border-radius: 10px;
+
+    font-size: 14px;
+    color: #0f172a;
+}
+
+.info-item span{
+    font-weight: 600;
+    color: #0369a1;
+}
+
+/* BUTTONS */
+.profile-buttons{
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+/* GLASS BUTTON */
+.btn-glass{
+    flex: 1;
+    padding: 10px;
+
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+
+    background: linear-gradient(135deg, rgba(103,199,192,0.9), rgba(127,168,201,0.9));
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 12px;
+
+    backdrop-filter: blur(8px);
+    transition: 0.3s ease;
+}
+
+/* HOVER */
+.btn-glass:hover{
+    transform: translateY(-3px);
+    background: linear-gradient(135deg, #3aa8a0, #67c7c0);
+}
+
+</style>
+
 {% endblock %}

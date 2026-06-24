@@ -10,6 +10,8 @@ from django.db.models import Q
 
 from .models import User, Roles, AdminActionLog, Task
 
+
+
 from django.utils import timezone
 
 # 🏠 Home page — shows login/signup options
@@ -19,9 +21,17 @@ from django.contrib.auth.views import LoginView
 def home(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
-    return redirect('login')
 
 
+    return redirect('landing')
+
+def about_view(request):
+    return render(request, 'about_page.html')
+
+def services_view(request):
+    return render(request, 'services_page.html')
+def contact_view(request):
+    return render(request, 'contact_page.html')
 def signup_citizen(request):
     if request.method == 'POST':
         form = CitizenSignupForm(request.POST,request.FILES)
@@ -62,22 +72,8 @@ def dashboard(request):
         return redirect('worker_dashboard')
 
     elif request.user.role == Roles.ADMIN:
-        # Admin dashboard logic
-        total_complaints = Task.objects.count()
-        pending_complaints = Task.objects.filter(status="new").count()
-        resolved_complaints = Task.objects.filter(status="completed").count()
-        active_workers = User.objects.filter(role=Roles.WORKER, is_active=True).count()
-        recent_tasks = Task.objects.order_by('-id')[:10]
 
-        context = {
-            "total_complaints": total_complaints,
-            "pending_complaints": pending_complaints,
-            "resolved_complaints": resolved_complaints,
-            "active_workers": active_workers,
-            "recent_tasks": recent_tasks,
-        }
-        return render(request, "accounts/admin_dashboard.html", context)
-
+        return redirect('admin_dashboard')
 @login_required
 def citizen_task_detail(request, task_id):
     # Only allow the submitting citizen to view their own task
@@ -539,27 +535,30 @@ def admin_dashboard(request):
     if request.user.role != Roles.ADMIN:
         return redirect('dashboard')
 
-    tasks = Task.objects.all()
+    # All tasks
+    tasks = Task.objects.select_related('assigned_to').order_by('-id')
 
-
+    # Counts
     total_complaints = tasks.count()
-    pending_complaints = tasks.filter(status='new').count()
-
+    pending_complaints = tasks.filter(status='new', assigned_to__isnull=True).count()
     resolved_complaints = tasks.filter(status='completed').count()
-    active_workers = User.objects.filter(role=Roles.WORKER, is_active=True).count()
 
+    # Active workers
+    workers = User.objects.filter(role=Roles.WORKER, is_active=True)
+
+    # Search (optional)
     query = request.GET.get('q', '').strip()
     if query:
-        recent_tasks = tasks.filter(task_code__icontains=query).order_by('-id')[:10]
+        recent_tasks = tasks.filter(Q(task_code__icontains=query) | Q(title__icontains=query))[:20]
     else:
-        recent_tasks = tasks.order_by('-id')[:10]
+        recent_tasks = tasks[:20]
 
     context = {
         "total_complaints": total_complaints,
         "pending_complaints": pending_complaints,
-
         "resolved_complaints": resolved_complaints,
-        "active_workers": active_workers,
+        "workers": workers,
+        "tasks": tasks,
         "recent_tasks": recent_tasks,
     }
 
@@ -873,4 +872,39 @@ def worker_update(request, pk):
         form = WorkerProfileForm(instance=profile)
 
     return render(request, 'accounts/worker_update.html', {'form': form, 'worker': worker})
+
+
+@login_required
+def global_task_search(request):
+    query = request.GET.get('q', '').strip()
+    if not query:
+        messages.warning(request, "Please enter a Task Code to search.")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+
+    task = None
+
+    # Admin → all tasks
+    if request.user.role == Roles.ADMIN:
+        task = Task.objects.filter(task_code__iexact=query).first()
+
+    # Worker → only assigned tasks
+    elif request.user.role == Roles.WORKER:
+        task = Task.objects.filter(task_code__iexact=query, assigned_to=request.user).first()
+
+    # Citizen → only submitted tasks
+    elif request.user.role == Roles.CITIZEN:
+        task = Task.objects.filter(task_code__iexact=query, submitted_by=request.user).first()
+
+    if task:
+        # redirect to task preview based on role
+        if request.user.role == Roles.ADMIN:
+            return redirect('task_preview', task_id=task.id)
+        elif request.user.role == Roles.WORKER:
+            return redirect('view_task', task_id=task.id)
+        else:  # Citizen
+            return redirect('citizen_task_detail', task_id=task.id)
+    else:
+        messages.error(request, f"No task found with code '{query}'.")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+
 
