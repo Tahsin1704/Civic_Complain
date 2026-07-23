@@ -11,9 +11,9 @@ The Civic Complaint Management System is a full-stack web application that digit
 ### 🔹 Project Summary
 
 - 🏛️ Digital platform for managing civic complaints
-- 👥 Supports three user roles: Citizen, Administrator, and Worker
+- 👥 Supports three user roles: Citizen, Admin and Worker
 - 📋 Allows citizens to submit complaints online
-- 📤 Enables administrators to verify and assign complaints
+- 📤 Enables admin to verify and assign complaints
 - 👷 Allows workers to update progress and resolve complaints
 - 🔄 Provides real-time complaint tracking
 - 🔐 Secure role-based authentication
