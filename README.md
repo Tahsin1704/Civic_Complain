@@ -92,7 +92,7 @@ The Civic Complaint Management System is a full-stack web application that digit
 - Git
 - GitHub
 
-
+---
 
 ## 🗃️ Database
 
