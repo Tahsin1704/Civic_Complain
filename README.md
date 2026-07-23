@@ -6,7 +6,7 @@
 
 ## 📖 Project Overview
 
-The Civic Complaint Management System is a full-stack web application that digitalizes the entire civic complaint management process. The platform enables citizens to report civic issues by submitting complaints with relevant details and supporting evidence. Admin review and verify incoming complaints before assigning them to the appropriate workers for resolution. Assigned workers update the progress of their tasks and mark complaints as resolved upon completion. Throughout the process, citizens can monitor the status of their complaints in real time, ensuring transparency and efficient communication between citizens, administrators, and field workers.
+The Civic Complaint Management System is a full-stack web application that digitalizes the entire civic complaint management process. The platform enables citizens to report civic issues by submitting complaints with relevant details and supporting evidence. Admin review and verify incoming complaints before assigning them to the appropriate workers for resolution. Assigned workers update the progress of their tasks and mark complaints as resolved upon completion. Throughout the process, citizens can monitor the status of their complaints in real time, ensuring transparency and efficient communication between citizens, admins, and field workers.
 
 ### 🔹 Project Summary
 
