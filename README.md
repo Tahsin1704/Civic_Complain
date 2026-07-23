@@ -59,22 +59,6 @@ The Civic Complaint Management System is a full-stack web application that digit
 
 ## 💻 Technology Stack
 
-### 🎨 Frontend
-
-- HTML5
-- CSS3
-- Bootstrap
-- JavaScript
-
-### ⚙️ Backend
-
-- Django
-- Python
-
-### 🗄️ Database
-
-- SQLite
-
 ### 💡 Programming Languages
 
 - Python
@@ -94,9 +78,9 @@ The Civic Complaint Management System is a full-stack web application that digit
 
 ---
 
-## 🗃️ Database
 
- - SQLite
+### 🗄️ Database
 
+- SQLite
 
 
